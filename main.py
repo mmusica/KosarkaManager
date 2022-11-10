@@ -1,14 +1,10 @@
 from openpyxl import Workbook, load_workbook
 from student import Student
-from openpyxl.utils import get_column_letter,get_column_interval, column_index_from_string
+from openpyxl.utils import get_column_letter, get_column_interval, column_index_from_string
 
 wb = load_workbook('documents/košarka_evidencija.xlsx')
 ws = wb.active
 #print(ws['D3'].value)
-
-
-col_range = ws['A:U']
-row_range = ws[3:31]
 
 studenti = []
 row_number = 3

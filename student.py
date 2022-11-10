@@ -7,7 +7,7 @@ class Student():
         self.broj_dolazaka = 0
 
     def ponasanje(self):
-        if self.broj_dolazaka < 3:
+        if self.broj_izostanaka > 3:
             return "BAD"
         else:
             return "GOOD"

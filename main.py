@@ -31,7 +31,7 @@ for row in ws.iter_rows(3, 31, column_index_from_string('A'), column_index_from_
     row_number += 1
 
 for student in studenti:
-    print(student.ime, "- Broj dolazaka:", student.broj_dolazaka,"- Broj izostanaka:", student.broj_izostanaka)
+    print(student.ime, "- Broj dolazaka:", student.broj_dolazaka,"- Broj izostanaka:", student.broj_izostanaka, "- Ponasanje:", student.ponasanje())
 
 wb.save('documents/košarka_evidencija.xlsx')
 

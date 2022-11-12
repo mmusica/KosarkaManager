@@ -1,3 +1,5 @@
+from openpyxl.utils import column_index_from_string
+
 
 class Student():
 
@@ -17,3 +19,53 @@ class Student():
 
     #def broji_dolazak(selfs,broj_dolazaka):
        # self.broj_dolazaka = broj_dolazaka
+
+def ispis_studenata(studenti):
+    for student in studenti:
+        print(student.ime, "- Broj dolazaka:", student.broj_dolazaka, "- Broj izostanaka:", student.broj_izostanaka,
+              "- Ponasanje:", student.ponasanje())
+
+def evidencija(row_number, ws, trazeni_student=None, studenti=[],evidentiraj = True):
+
+    for row in ws.iter_rows(3, 31, column_index_from_string('A'), column_index_from_string('U'), True):
+
+        col_number = column_index_from_string('A')
+
+        for cell in row:
+            if cell != None and cell != "+" and cell != '-':
+                osoba = Student(cell)
+                studenti.append(osoba)
+
+            if cell == "+":
+                osoba.broj_dolazaka += 1
+            if cell == None and not evidentiraj:
+                pamti_column = col_number
+                break
+            if cell == None and evidentiraj:
+                while True:
+                    dolazak = str(input(("Dolazak za {} (+/-): ".format(osoba.ime))))
+
+                    if dolazak == "+" or dolazak == "-":
+                        break
+                    else:
+                        print("Molimo Vas da unesete + ili -")
+                ws.cell(row_number, col_number).value = dolazak
+                break
+
+            if cell == '-':
+                osoba.broj_izostanaka += 1
+
+            col_number += 1
+
+        if evidentiraj==False:
+            if osoba.ime == trazeni_student:
+                return [True, osoba, row_number, pamti_column]
+
+        row_number += 1
+
+    if evidentiraj==False:
+        return [False, "Ovakav student ne postoji"]
+
+def nadi_studenta(ime_studenta,ws,row_number):
+
+    return evidencija(row_number=row_number, ws=ws, trazeni_student=ime_studenta, evidentiraj=False)

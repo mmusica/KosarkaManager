@@ -1,37 +1,53 @@
 from openpyxl import Workbook, load_workbook
-from student import Student
+from student import Student, ispis_studenata, evidencija, nadi_studenta
 from openpyxl.utils import get_column_letter, get_column_interval, column_index_from_string
 
 wb = load_workbook('documents/košarka_evidencija.xlsx')
 ws = wb.active
-#print(ws['D3'].value)
 
-studenti = []
-row_number = 3
+odabir = 0
+while True:
+    print("1. za Unos dolazaka")
+    print("2. za Pronalazak studenta")
+    print("0. za izlaz")
+    odabir = int(input("Vas odabir?"))
+    studenti = []
+    if odabir == 0:
+        break
+    elif odabir == 1:
+        row_number = 3
+        evidencija(studenti=studenti, row_number=row_number, ws=ws)
+        wb.save('documents/košarka_evidencija.xlsx')
 
-for row in ws.iter_rows(3, 31, column_index_from_string('A'), column_index_from_string('H'), True):
+    elif odabir == 2:
+        ime_studenta = input("Ime studenta kojeg trazite: ")
+        pronadeni_student = nadi_studenta(ime_studenta,ws,row_number=3)
+        if pronadeni_student[0]:
+            print("Ime:", pronadeni_student[1].ime, "Dolasci:", pronadeni_student[1].broj_dolazaka,
+                  "Izostanci:", pronadeni_student[1].broj_izostanaka)
 
-    col_number = column_index_from_string('A')
-    for cell in row:
-        if cell != None and cell != "+" and cell!='-':
-            osoba = Student(cell)
-            studenti.append(osoba)
+            print("Zelite ovom studentu dodati izostanak ili dolazak?: ")
+            dodaj = input("1 za dodaj, 0 za ne: ")
+            if(dodaj == "1"):
+                while True:
 
-        if cell == "+":
-            osoba.broj_dolazaka += 1
+                    p_m = input(("+/-: "))
+                    if p_m == "+" or p_m == "-":
+                        break
 
-        if cell == None:
-            ws.cell(row_number, col_number).value = "-"
+                ws.cell(pronadeni_student[2],pronadeni_student[3]).value = p_m
+                wb.save('documents/košarka_evidencija.xlsx')
+                print("Spremljeno!")
 
-        if cell == '-':
-            osoba.broj_izostanaka += 1
+            else:
+                print("")
+        else:
+            print(pronadeni_student[1])
 
-        col_number += 1
+    else:
+      print("Ponovno unesite vrijednost 1 ili 2 ili 0")
 
-    row_number += 1
 
-for student in studenti:
-    print(student.ime, "- Broj dolazaka:", student.broj_dolazaka,"- Broj izostanaka:", student.broj_izostanaka, "- Ponasanje:", student.ponasanje())
 
-wb.save('documents/košarka_evidencija.xlsx')
+
 

@@ -1,5 +1,7 @@
 from openpyxl.utils import column_index_from_string
-
+from openpyxl.styles import Color, PatternFill, Font, Border
+from openpyxl.styles import colors
+from openpyxl.cell import Cell
 
 class Student():
 
@@ -27,6 +29,14 @@ def ispis_studenata(studenti):
 
 def evidencija(row_number, ws, trazeni_student=None, studenti=[],evidentiraj = True):
 
+    redFill = PatternFill(start_color='FFFF0000',
+                          end_color='FFFF0000',
+                          fill_type='solid')
+
+    greenFill = PatternFill(start_color='059033',
+                          end_color='059033',
+                          fill_type='solid')
+
     for row in ws.iter_rows(3, 31, column_index_from_string('A'), column_index_from_string('U'), True):
 
         col_number = column_index_from_string('A')
@@ -38,6 +48,8 @@ def evidencija(row_number, ws, trazeni_student=None, studenti=[],evidentiraj = T
 
             if cell == "+":
                 osoba.broj_dolazaka += 1
+                ws.cell(row_number, col_number).fill = greenFill
+
             if cell == None and not evidentiraj:
                 pamti_column = col_number
                 break
@@ -50,10 +62,15 @@ def evidencija(row_number, ws, trazeni_student=None, studenti=[],evidentiraj = T
                     else:
                         print("Molimo Vas da unesete + ili -")
                 ws.cell(row_number, col_number).value = dolazak
+                if dolazak == "+":
+                    ws.cell(row_number, col_number).fill = greenFill
+                else:
+                    ws.cell(row_number, col_number).fill = redFill
                 break
 
             if cell == '-':
                 osoba.broj_izostanaka += 1
+                ws.cell(row_number, col_number).fill = redFill
 
             col_number += 1
 
